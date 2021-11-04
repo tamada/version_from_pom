@@ -1,0 +1,3 @@
+module jp.cafebabe.vfp {
+
+}
