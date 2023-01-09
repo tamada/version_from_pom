@@ -71,15 +71,16 @@ function build_native_image() {
   shift
   if [[ ! -f $target ]] ; then
     echo "native-image $@ $target"
-    native-image $@ $target
+    native-image -H:Log=registerResource:5 $@ $target
   fi
 }
 
 function build_native_images() {
-  build_native_image vfp-jar     -jar target/mods/vfp-1.0.0.jar
-  build_native_image vfp-module  --module-path target/mods --module jp.cafebabe.vfp/jp.cafebabe.vfp.Main
-  build_native_image vfp2-jar    -jar target/mods2/vfp-1.0.0.jar
-  build_native_image vfp2-module --module-path target/mods2 --module jp.cafebabe.vfp/jp.cafebabe.vfp.Main
+  INCLUDES=-H:IncludeResources=resources/vfp.properties
+  build_native_image vfp-jar     $INCLUDES -jar target/mods/vfp-1.0.0.jar 
+  build_native_image vfp-module  $INCLUDES --module-path target/mods --module jp.cafebabe.vfp/jp.cafebabe.vfp.Main
+  build_native_image vfp2-jar    $INCLUDES -jar target/mods2/vfp2-1.0.0.jar
+  build_native_image vfp2-module $INCLUDES --module-path target/mods2 --module jp.cafebabe.vfp/jp.cafebabe.vfp.Main
 }
 
 function build_targets() {
@@ -105,7 +106,7 @@ function perform() {
   echo "========== Plain2 =========="
   java -cp classes2 jp.cafebabe.vfp.Main
   echo "========== Jar2 =========="
-  java -jar target/mods2/vfp-1.0.0.jar
+  java -jar target/mods2/vfp2-1.0.0.jar
   echo "========== Module2 =========="
   java --module-path target/mods2 --module jp.cafebabe.vfp/jp.cafebabe.vfp.Main
   echo "========== Native-Jar =========="
@@ -115,7 +116,7 @@ function perform() {
   echo "========== Native-Jar2 =========="
   ./vfp2-jar
   echo "========== Native-Module2 =========="
-  ./vf2-pmodule
+  ./vfp2-module
 }
 
 function execute() {
